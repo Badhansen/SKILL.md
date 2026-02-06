@@ -23,7 +23,7 @@ Explain source code through structured text explanations and hand-drawn style Ex
 3. **Select** appropriate diagram type(s)
 4. **Generate** text explanation with key insights
 5. **Create** `.excalidraw` JSON diagram
-6. **Output** to the project's `outputs/` directory
+6. **Output** to user's working directory or specified location
 
 ## Input Handling
 
@@ -136,9 +136,25 @@ Suggestions for refactoring or enhancement.
 
 ## Element Reference
 
+> **CRITICAL**: Every element MUST include these base properties for proper rendering:
+>
+> ```json
+> {
+>   "version": 1, "versionNonce": 1, "isDeleted": false,
+>   "seed": <unique_number>, "angle": 0, "opacity": 100,
+>   "groupIds": [], "frameId": null, "boundElements": [],
+>   "updated": 1, "link": null, "locked": false
+> }
+> ```
+>
+> Text elements also need: `containerId`, `originalText`, `lineHeight`, `verticalAlign`
+> Lines/arrows also need: `lastCommittedPoint`, `startBinding`, `endBinding`, `startArrowhead`, `endArrowhead`
+>
+> See [references/diagram-templates.md](references/diagram-templates.md) for complete examples.
+
 ### Shapes
 
-**Rectangle** (classes, entities, processes):
+**Rectangle** (classes, entities, processes) - key properties:
 
 ```json
 {
@@ -157,7 +173,7 @@ Suggestions for refactoring or enhancement.
 }
 ```
 
-**Diamond** (decisions):
+**Diamond** (decisions) - key properties:
 
 ```json
 {
@@ -171,7 +187,7 @@ Suggestions for refactoring or enhancement.
 }
 ```
 
-**Ellipse** (start/end, actors):
+**Ellipse** (start/end, actors) - key properties:
 
 ```json
 {
@@ -187,7 +203,7 @@ Suggestions for refactoring or enhancement.
 
 ### Connectors
 
-**Arrow** (relationships, flow):
+**Arrow** (relationships, flow) - key properties:
 
 ```json
 {
@@ -204,7 +220,7 @@ Suggestions for refactoring or enhancement.
 }
 ```
 
-**Line** (connections, dividers):
+**Line** (connections, dividers) - key properties:
 
 ```json
 {
@@ -222,6 +238,8 @@ Suggestions for refactoring or enhancement.
 
 ### Text
 
+Key properties (must also include text-specific required props):
+
 ```json
 {
     "type": "text",
@@ -231,7 +249,11 @@ Suggestions for refactoring or enhancement.
     "text": "ClassName",
     "fontSize": 16,
     "fontFamily": 1,
-    "textAlign": "center"
+    "textAlign": "center",
+    "originalText": "ClassName",
+    "lineHeight": 1.25,
+    "verticalAlign": "top",
+    "containerId": null
 }
 ```
 
@@ -285,7 +307,7 @@ def gen_id(t, i):
 For each visualization:
 
 1. **Text explanation** in conversation
-2. **Diagram file** saved to `outputs/{name}.excalidraw` in the project directory
+2. **Diagram file** saved to `./{name}.excalidraw` or user-specified path
 3. **Usage instructions** for opening/editing
 
 Example naming: `auth-system-class-diagram.excalidraw`
